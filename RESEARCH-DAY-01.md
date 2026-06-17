@@ -140,7 +140,7 @@ A successful DELETE should return 204 No Content because the resource was remove
 Q3. Update only one field  PUT or PATCH? Defend your answer.
 Q3. Update only one field  PUT or PATCH? Defend your answer.
 
-PATCH is more appropriate because it is designed for partial updates. If only one field needs to change, PATCH updates that field without requiring the entire resource to be sent.
+PATCH is more appropriate because it is designed for partial updates. If only one field needs to change, PATCH updates that field without requiring the entire resource to sent.
 
 Q4. What happens if you forget @Valid on the controller?
 
