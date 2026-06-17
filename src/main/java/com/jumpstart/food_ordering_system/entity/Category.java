@@ -16,7 +16,8 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private String description;
+    // + getter and setter
     private String name;
 
     // Default constructor required by JPA
