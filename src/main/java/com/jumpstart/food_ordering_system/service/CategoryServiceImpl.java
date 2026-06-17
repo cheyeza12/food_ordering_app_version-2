@@ -23,6 +23,8 @@ import java.util.List;
  * so it can be injected wherever CategoryService is needed.
  */
 @Service
+
+
 public class CategoryServiceImpl implements CategoryService {
 
     // @Autowired injects the CategoryRepository automatically by Spring (Dependency Injection)
@@ -72,10 +74,14 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto addCategory(CategoryDto dto) {
         Category category = new Category();
         category.setName(dto.getName());
+        category.setDescription(dto.getDescription());  // ← set BEFORE save
+
         Category saved = categoryRepository.save(category);
+
         CategoryDto savedDto = new CategoryDto();
         savedDto.setId(saved.getId());
         savedDto.setName(saved.getName());
+        savedDto.setDescription(saved.getDescription());  // ← map back to DTO
         return savedDto;
     }
 
