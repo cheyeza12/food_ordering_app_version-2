@@ -6,7 +6,6 @@ import com.jumpstart.food_ordering_system.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jumpstart.food_ordering_system.exception.CategoryNotFoundException;
-
 import java.util.ArrayList;
 import java.util.List;
 
