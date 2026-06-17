@@ -20,7 +20,8 @@ public class CategoryDto {
     @NotBlank(message = "Category name is required")
     @Size(min = 2, max = 50, message = "Name must be 2-50 characters")
     private String name;
-
+    private String description;
+    // + getter and setter
     // Default constructor
     public CategoryDto() {}
 
