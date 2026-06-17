@@ -1,4 +1,6 @@
 package com.jumpstart.food_ordering_system.dto;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * CategoryDto (Data Transfer Object) is used to transfer category data
@@ -15,6 +17,8 @@ package com.jumpstart.food_ordering_system.dto;
 public class CategoryDto {
 
     private Long id;
+    @NotBlank(message = "Category name is required")
+    @Size(min = 2, max = 50, message = "Name must be 2-50 characters")
     private String name;
 
     // Default constructor

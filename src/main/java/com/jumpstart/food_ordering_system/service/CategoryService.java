@@ -18,5 +18,15 @@ public interface CategoryService {
      *
      * @return List of CategoryDto
      */
-    List<CategoryDto> getAllCategories();
+    List<CategoryDto> getAllCategories(); // Retrieve a single category by its id
+    CategoryDto getCategoryById(Long id);
+
+    // Create a new category
+    CategoryDto addCategory(CategoryDto dto);
+
+    // Update an existing category by id
+    CategoryDto updateCategory(Long id, CategoryDto dto);
+
+    // Delete a category by id
+    void deleteCategory(Long id);
 }

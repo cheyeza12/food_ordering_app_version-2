@@ -3,10 +3,11 @@ package com.jumpstart.food_ordering_system.controller;
 import com.jumpstart.food_ordering_system.dto.CategoryDto;
 import com.jumpstart.food_ordering_system.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ import java.util.List;
  * @RequestMapping("/api/category") sets the base URL for all endpoints in this controller.
  */
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/categories")
 public class CategoryController {
 
     // @Autowired injects CategoryService automatically (Dependency Injection)
@@ -52,4 +53,27 @@ public class CategoryController {
         // Delegate to the service layer — controller should not contain business logic
         return categoryService.getAllCategories();
     }
-}
+    // GET /api/categories/{id}
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
+    }
+
+    // POST /api/categories
+    @PostMapping
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody @Valid CategoryDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.addCategory(dto));
+    }
+
+    // PUT /api/categories/{id}
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @RequestBody @Valid CategoryDto dto) {
+        return ResponseEntity.ok(categoryService.updateCategory(id, dto));
+    }
+
+    // DELETE /api/categories/{id}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
+    }}

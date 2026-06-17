@@ -5,6 +5,7 @@ import com.jumpstart.food_ordering_system.entity.Category;
 import com.jumpstart.food_ordering_system.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.jumpstart.food_ordering_system.exception.CategoryNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,4 +56,49 @@ public class CategoryServiceImpl implements CategoryService {
         // Step 4: Return the list of DTOs to the controller
         return categoryDtos;
     }
-}
+    // Get a single category by id - throws exception if not found
+    @Override
+    public CategoryDto getCategoryById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(
+                        "Category not found with id: " + id));
+        CategoryDto dto = new CategoryDto();
+        dto.setId(category.getId());
+        dto.setName(category.getName());
+        return dto;
+    }
+
+    // Create a new category - maps DTO to entity, saves, returns saved DTO
+    @Override
+    public CategoryDto addCategory(CategoryDto dto) {
+        Category category = new Category();
+        category.setName(dto.getName());
+        Category saved = categoryRepository.save(category);
+        CategoryDto savedDto = new CategoryDto();
+        savedDto.setId(saved.getId());
+        savedDto.setName(saved.getName());
+        return savedDto;
+    }
+
+    // Update existing category - find by id, update name, save, return updated DTO
+    @Override
+    public CategoryDto updateCategory(Long id, CategoryDto dto) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(
+                        "Category not found with id: " + id));
+        category.setName(dto.getName());
+        Category updated = categoryRepository.save(category);
+        CategoryDto updatedDto = new CategoryDto();
+        updatedDto.setId(updated.getId());
+        updatedDto.setName(updated.getName());
+        return updatedDto;
+    }
+
+    // Delete category by id - throws exception if not found
+    @Override
+    public void deleteCategory(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException(
+                        "Category not found with id: " + id));
+        categoryRepository.delete(category);
+    }}
