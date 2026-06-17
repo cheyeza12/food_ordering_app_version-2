@@ -148,4 +148,4 @@ Validation annotations such as @NotBlank and @Size will not be executed. Invalid
 
 Q5. Why must update/delete have {id} in the URL but create does not?
 
-Update and delete operations need to know exactly which existing resource to modify or remove, so an ID is required. Create does not need an ID because the system generates a new resource and assigns its ID automatically.
+Update and delete operations need to know exactly which existing resource to modify or remove, so an ID is required. Create does not need an ID because the system generates a new resource and assigns its ID 
