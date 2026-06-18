@@ -1,6 +1,7 @@
 package com.jumpstart.food_ordering_system.controller;
 
 import com.jumpstart.food_ordering_system.dto.CategoryDto;
+import com.jumpstart.food_ordering_system.response.Response;
 import com.jumpstart.food_ordering_system.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,46 +35,48 @@ public class CategoryController {
     private CategoryService categoryService;
 
     /**
-     * GET /api/category
+     * GET /api/categories
      *
      * This endpoint retrieves all categories from the database
-     * and returns them as a JSON array.
+     * and returns them wrapped in a standard Response<T>.
      *
-     * Example response:
-     * [
-     *   { "id": 1, "name": "Fast Food" },
-     *   { "id": 2, "name": "Pizza" }
-     * ]
-     *
-     * @return List of CategoryDto objects (automatically converted to JSON)
+     * @return Response containing a List of CategoryDto objects
      */
     @GetMapping
-    public List<CategoryDto> getAllCategories() {
+    public ResponseEntity<Response<List<CategoryDto>>> getAllCategories() {
         System.out.println("is this application working");
         // Delegate to the service layer — controller should not contain business logic
-        return categoryService.getAllCategories();
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(Response.success("Categories retrieved", categories));
     }
+
     // GET /api/categories/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.getCategoryById(id));
+    public ResponseEntity<Response<CategoryDto>> getCategoryById(@PathVariable Long id) {
+        CategoryDto dto = categoryService.getCategoryById(id);
+        return ResponseEntity.ok(Response.success("Category retrieved", dto));
     }
 
     // POST /api/categories
     @PostMapping
-    public ResponseEntity<CategoryDto> addCategory(@RequestBody @Valid CategoryDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.addCategory(dto));
+    public ResponseEntity<Response<CategoryDto>> addCategory(@RequestBody @Valid CategoryDto dto) {
+        CategoryDto created = categoryService.addCategory(dto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Response.success("Category created", created));
     }
 
     // PUT /api/categories/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @RequestBody @Valid CategoryDto dto) {
-        return ResponseEntity.ok(categoryService.updateCategory(id, dto));
+    public ResponseEntity<Response<CategoryDto>> updateCategory(@PathVariable Long id, @RequestBody @Valid CategoryDto dto) {
+        CategoryDto updated = categoryService.updateCategory(id, dto);
+        return ResponseEntity.ok(Response.success("Category updated", updated));
     }
 
     // DELETE /api/categories/{id}
+    // Kept as 204 No Content — no Response<T> wrapper here since 204 must not have a body.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
-    }}
+    }
+}
