@@ -29,10 +29,7 @@ public class Menu {
 
     private String imageUrl;
 
-    // Many menu items can belong to one category.
-    // @JoinColumn tells Hibernate to store the relationship as a
-    // "category_id" foreign key column on the "menus" table.
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
 }
