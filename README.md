@@ -71,3 +71,103 @@ All API responses use a standardized `Response<T>` wrapper.
 
 ```
 ```
+## Menu API
+
+The Menu API allows users to create and retrieve menu items associated with categories.
+
+### Base URL
+
+```text
+/api/menu
+```
+
+### Endpoints
+
+#### Create Menu
+
+**POST** `/api/menu`
+
+Request Body:
+
+```json
+{
+  "name": "Chicken Burger",
+  "description": "Crispy chicken",
+  "price": 55.00,
+  "imageUrl": "https://placehold.co/300",
+  "categoryId": 1
+}
+```
+
+Response:
+
+```json
+{
+  "statusCode": 200,
+  "message": "Menu created",
+  "data": {
+    "id": 1,
+    "name": "Chicken Burger",
+    "description": "Crispy chicken",
+    "price": 55.00,
+    "imageUrl": "https://placehold.co/300",
+    "categoryId": 1,
+    "categoryName": "Burgers"
+  },
+  "timestamp": "2026-06-19T18:18:46"
+}
+```
+
+---
+
+#### Get All Menus
+
+**GET** `/api/menu`
+
+Returns a list of all menu items.
+
+---
+
+#### Get Menu By ID
+
+**GET** `/api/menu/{id}`
+
+Example:
+
+```text
+GET /api/menu/1
+```
+
+Returns a single menu item if found.
+
+---
+
+### Menu Entity Fields
+
+| Field        | Description                     |
+| ------------ | ------------------------------- |
+| id           | Unique menu identifier          |
+| name         | Menu item name                  |
+| description  | Menu item description           |
+| price        | Item price stored as BigDecimal |
+| imageUrl     | Image URL for the menu item     |
+| categoryId   | Category identifier             |
+| categoryName | Category name                   |
+
+### Validation Rules
+
+* name cannot be blank
+* price cannot be null
+* price must be greater than or equal to 0
+* categoryId cannot be null
+* categoryId must reference an existing category
+
+### Database Relationship
+
+A Menu belongs to one Category using a Many-to-One relationship:
+
+```java
+@ManyToOne
+@JoinColumn(name = "category_id")
+private Category category;
+```
