@@ -71,3 +71,21 @@ To prevent creating menu items that reference categories that do not exist. This
 ## Q13. Why write private mapper methods (entity <-> dto)?
 
 Mapper methods separate conversion logic from business logic, improve code reuse, reduce duplication, and make the service easier to maintain and test.
+
+# SELF-QUIZ
+
+## Q1. Why didn't we add @OneToMany on Category for menus?
+
+We only needed a unidirectional relationship from Menu to Category. Adding `@OneToMany` would make the relationship bidirectional, increasing complexity and potentially causing unnecessary data loading. Since the application only needs to access the Category from a Menu, `@ManyToOne` is sufficient.
+
+## Q2. What would ddl-auto = create-drop do? When would you use it?
+
+`ddl-auto=create-drop` tells Hibernate to create all database tables when the application starts and drop them when the application stops. It is useful during development and testing because it provides a clean database each time the application runs. It should not be used in production because it deletes all data.
+
+## Q3. If you delete a Category that has menus, what happens by default?
+
+By default, the database will prevent the deletion if there are Menu records referencing that Category through a foreign key. The delete operation fails because it would violate referential integrity.
+
+## Q4. Why is BigDecimal better than double for storing money values?
+
+`BigDecimal` provides exact decimal precision and avoids rounding errors. `double` uses floating-point arithmetic, which can introduce small inaccuracies. Since financial calculations require precision, `BigDecimal` is the preferred choice for storing money values.
