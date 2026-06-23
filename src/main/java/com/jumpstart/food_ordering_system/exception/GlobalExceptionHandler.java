@@ -1,6 +1,7 @@
 package com.jumpstart.food_ordering_system.exception;
 
 import com.jumpstart.food_ordering_system.response.Response;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -12,19 +13,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * GlobalExceptionHandler catches exceptions thrown anywhere in the application
- * and returns clean JSON error responses instead of raw stack traces.
- *
- * Errors now use the same Response<T> wrapper as successful responses,
- * so the client always sees a consistent shape: statusCode, message, data, timestamp.
- *
- * @RestControllerAdvice applies this handler across all controllers globally.
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Handles 404 - when a category id does not exist
     @ExceptionHandler(CategoryNotFoundException.class)
     public ResponseEntity<Response<Void>> handleCategoryNotFoundException(
             CategoryNotFoundException ex) {
@@ -32,7 +23,6 @@ public class GlobalExceptionHandler {
                 .body(Response.error(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
     }
 
-    // Handles 400 - when request body fails validation (@NotBlank, @Size)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Response<Map<String, String>>> handleValidationException(
             MethodArgumentNotValidException ex) {
@@ -41,8 +31,6 @@ public class GlobalExceptionHandler {
             fieldErrors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
 
-        // error() doesn't carry a data payload, but here we want the field-level
-        // errors visible to the client, so we build the Response directly.
         Response<Map<String, String>> response = Response.<Map<String, String>>builder()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .message("Validation failed")
@@ -51,5 +39,17 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Response<Void>> handleConflict(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Response.error(409, "Cannot delete: resource is still referenced by other records"));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Response<Void>> handleGeneric(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Response.error(500, "An unexpected error occurred"));
     }
 }
