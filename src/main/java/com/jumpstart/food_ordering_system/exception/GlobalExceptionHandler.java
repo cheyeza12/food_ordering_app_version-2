@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.jumpstart.food_ordering_system.controller")
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CategoryNotFoundException.class)
@@ -49,11 +49,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Response<Void>> handleGeneric(HttpServletRequest request, Exception ex) {
-        String path = request.getRequestURI();
-        if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
-            throw new RuntimeException(ex);
-        }
+    public ResponseEntity<Response<Void>> handleGeneric(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Response.error(500, "An unexpected error occurred"));
     }
