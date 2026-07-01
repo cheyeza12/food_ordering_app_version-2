@@ -1,6 +1,7 @@
 package com.jumpstart.food_ordering_system.exception;
 
 import com.jumpstart.food_ordering_system.response.Response;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Response<Void>> handleGeneric(Exception ex) {
+    public ResponseEntity<Response<Void>> handleGeneric(HttpServletRequest request, Exception ex) {
+        String path = request.getRequestURI();
+        if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
+            throw new RuntimeException(ex);
+        }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Response.error(500, "An unexpected error occurred"));
     }
